@@ -96,10 +96,10 @@ export default function Home() {
 
             // Update success message to include distance information
             setMessage(
-                `Attendance recorded successfully! ${
+                `Attendance recorded. ${
                     distance <= 300
                         ? `You are within range (${Math.round(distance)}m)`
-                        : `You are too far (${Math.round(distance)}m)`
+                        : `But you are too far (${Math.round(distance)}m)`
                 }`
             );
             setFormData({ email: "", huid: "", name: "" });

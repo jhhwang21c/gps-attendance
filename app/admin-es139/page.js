@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { supabase } from "../../utils/supabase";
+import { getSupabase } from "@/lib/supabase/client";
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth's radius in meters
@@ -18,8 +18,12 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function AdminPage() {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
+
+    // Initialize selectedDate with today's date
     const [attendanceData, setAttendanceData] = useState([]);
-    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedDate, setSelectedDate] = useState(today);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -30,6 +34,7 @@ export default function AdminPage() {
     const fetchAttendanceData = async () => {
         try {
             setLoading(true);
+            const supabase = getSupabase();
             let query = supabase.from("attendance").select("*");
 
             if (selectedDate) {
@@ -47,6 +52,7 @@ export default function AdminPage() {
             setAttendanceData(data);
         } catch (err) {
             setError(err.message);
+            console.error("Error fetching attendance data:", err);
         } finally {
             setLoading(false);
         }
@@ -55,12 +61,16 @@ export default function AdminPage() {
     const downloadCSV = () => {
         if (attendanceData.length === 0) return;
 
-        // Remove "Present" from headers
-        const headers = ["Name", "Email", "HUID", "Timestamp", "Distance"];
+        const headers = [
+            "Name",
+            "Email",
+            "HUID",
+            "Timestamp",
+            "Status",
+            "Distance",
+        ];
 
-        // Convert data to CSV format
         const csvData = attendanceData.map((record) => {
-            // Remove the "Present" value
             const values = [
                 `"${record.name}"`,
                 `"${record.email}"`,
@@ -73,6 +83,7 @@ export default function AdminPage() {
                     minute: "2-digit",
                     hour12: true,
                 })}"`,
+                `"${record.is_present ? "Present" : "Absent"}"`,
                 `"${calculateDistance(
                     record.lat,
                     record.long,
@@ -152,6 +163,9 @@ export default function AdminPage() {
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                 Time
                                             </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
@@ -177,6 +191,19 @@ export default function AdminPage() {
                                                         minute: "2-digit",
                                                         hour12: true,
                                                     })}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span
+                                                        className={`px-2 py-1 rounded-full text-xs ${
+                                                            record.is_present
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-red-100 text-red-800"
+                                                        }`}
+                                                    >
+                                                        {record.is_present
+                                                            ? "Present"
+                                                            : "Absent"}
+                                                    </span>
                                                 </td>
                                             </tr>
                                         ))}
