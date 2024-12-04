@@ -62,7 +62,8 @@ export default function AdminPage() {
         if (attendanceData.length === 0) return;
 
         const headers = [
-            "Name",
+            "First Name",
+            "Last Name",
             "Email",
             "HUID",
             "Timestamp",
@@ -72,7 +73,8 @@ export default function AdminPage() {
 
         const csvData = attendanceData.map((record) => {
             const values = [
-                `"${record.name}"`,
+                `"${record.first_name}"`,
+                `"${record.last_name}"`,
                 `"${record.email}"`,
                 `"${record.huid}"`,
                 `"${new Date(record.timestamp).toLocaleString("en-US", {
@@ -152,7 +154,10 @@ export default function AdminPage() {
                                     <thead className="bg-gray-50 dark:bg-gray-700">
                                         <tr>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                                Name
+                                                First Name
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Last Name
                                             </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                 Email
@@ -172,7 +177,10 @@ export default function AdminPage() {
                                         {attendanceData.map((record, index) => (
                                             <tr key={index}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
-                                                    {record.name}
+                                                    {record.first_name}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
+                                                    {record.last_name}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-200">
                                                     {record.email}
