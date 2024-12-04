@@ -21,7 +21,8 @@ export default function Home() {
     const [formData, setFormData] = useState({
         email: "",
         huid: "",
-        name: "",
+        first_name: "",
+        last_name: "",
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
@@ -80,7 +81,8 @@ export default function Home() {
             const attendanceData = {
                 email: formData.email,
                 huid: formData.huid,
-                name: formData.name,
+                first_name: formData.first_name,
+                last_name: formData.last_name,
                 lat: position.coords.latitude,
                 long: position.coords.longitude,
                 ip_address: ipData.ip,
@@ -102,7 +104,7 @@ export default function Home() {
                         : `But you are too far (${Math.round(distance)}m)`
                 }`
             );
-            setFormData({ email: "", huid: "", name: "" });
+            setFormData({ email: "", huid: "", first_name: "", last_name: "" });
         } catch (error) {
             setMessage(
                 "Error: " + (error.message || "Failed to record attendance")
@@ -203,18 +205,37 @@ export default function Home() {
 
                     <div>
                         <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                            Full Name
+                            First Name
                         </label>
                         <input
                             type="text"
                             required
-                            placeholder="Your full name"
+                            placeholder="Your first name"
                             className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white transition-all"
-                            value={formData.name}
+                            value={formData.first_name}
                             onChange={(e) =>
                                 setFormData({
                                     ...formData,
-                                    name: e.target.value,
+                                    first_name: e.target.value,
+                                })
+                            }
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                            Last Name
+                        </label>
+                        <input
+                            type="text"
+                            required
+                            placeholder="Your last name"
+                            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                            value={formData.last_name}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    last_name: e.target.value,
                                 })
                             }
                         />
